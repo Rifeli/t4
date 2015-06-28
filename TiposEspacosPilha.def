@@ -1,0 +1,26 @@
+#if ! defined( TIPOS_PILHA_ )
+#define TIPOS_PILHA_
+/***************************************************************************
+*
+*  $MCD Arquivo de definição: TiposEspacosPilha.def
+*
+*  Projeto: Automatização de testes
+*  Gestor:  Flavio Bevilaqui
+*  Autores: avs
+*  Modificacao: HR
+*
+*  $ED Descrição do arquivo
+*     Este arquivo declara os identificadores de tipos dos espaços de dados
+*		utilizados pelo módulo pilha. O módulo obedece o padrão estabelecido
+*     pelo módulo CNTESPAC. Ou seja, contém uma seqüência de declaradores
+*     a serem incluídos em um enum. Cada declarador corresponde a um dos
+*     tipos de espaço de dados.
+*
+***************************************************************************/
+
+      PILHA_TipoEspacoCabeca , 
+      PILHA_TipoEspacoNo     ,
+
+/********** Fim do arquivo de definição: TiposEspacosPilha.def  **********/
+
+#endif
