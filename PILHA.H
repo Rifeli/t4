@@ -129,4 +129,11 @@ PILHA_tpCondRet PILHA_Quantidade(PILHA_tppPilha p, int * quantidade);
 PILHA_tpCondRet PILHA_Decrementa(PILHA_tppPilha p);
 PILHA_tpCondRet PILHA_Incrementa(PILHA_tppPilha p);
 
+#ifdef _DEBUG
+
+void PILHA_Deturpa(PILHA_tppPilha pPilha, PILHA_tpModosDeturpacao ModoDeturpar);
+PILHA_tpCondRet PILHA_VerificarPilha( PILHA_tppPilha pPiLha );
+
+#endif
+
 #endif 

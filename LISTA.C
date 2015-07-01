@@ -556,5 +556,18 @@
 
    } /* Fim função: LIS  -Limpar a cabeça da lista */
 
+ LIS_tpCondRet LIS_VerificaCelulaInterna(LIS_tppLista pLista){
+	   if(pLista->pElemCorr->pProx->pAnt == pLista->pElemCorr){
+		   return LIS_CondRetFalhaVerificar;
+	   }
+	   if(pLista->pElemCorr->pAnt->pProx == pLista->pElemCorr){
+		   return LIS_CondRetFalhaVerificar;
+	   }
+	   if(pLista->pElemCorr->pProx->pProx->pAnt == pLista->pElemCorr->pProx){
+		   return LIS_CondRetFalhaVerificar;
+	   }
+   
+   }
+
 /********** Fim do módulo de implementação: LIS  Lista duplamente encadeada **********/
 
