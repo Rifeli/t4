@@ -50,9 +50,11 @@ typedef enum {
 	PILHA_DeturpaTipoCabeca ,
 	PILHA_DeturpaEspacoCabeca ,
 	PILHA_DeturpaQuantidade ,
-	PILHA_DeturpaTopo ,
+	PILHA_DeturpaEspacoTopo ,
 	PILHA_DeturpaLixoTopo ,
 	PILHA_DeturpaLixoCelulaInterna ,
+	PILHA_DeturpaTipoTopo ,
+	PILHA_DeturpaEspacoCelularInterna ,
 
 } PILHA_tpModosDeturpacao;
 

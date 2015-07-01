@@ -96,7 +96,7 @@ void PILHA_Deturpa(PILHA_tppPilha pPilha, PILHA_tpModosDeturpacao ModoDeturpar){
 	else if(PILHA_DeturpaQuantidade){
 		pPilha->quantidade = INT_MAX;
 	}
-	else if(PILHA_DeturpaTopo){
+	else if(PILHA_DeturpaEspacoTopo){
 		if(PILHA_Pop(pPilha, &pCarta) == PILHA_CondRetOK){
 			memcpy( (( char * )( pCarta )) - 10 , "????" , 4 ) ;
 			PILHA_Push(pPilha, pCarta);
@@ -121,6 +121,26 @@ void PILHA_Deturpa(PILHA_tppPilha pPilha, PILHA_tpModosDeturpacao ModoDeturpar){
 			PILHA_Push(pPilha, pCarta);
 		}
 	}
+	else if(PILHA_DeturpaTipoTopo){
+		if(PILHA_Pop(pPilha, &pCarta) == PILHA_CondRetOK){
+			CED_DefinirTipoEspaco( pPilha , CED_ID_TIPO_ILEGAL );
+			PILHA_Push(pPilha, pCarta);
+		}
+
+	}
+	else if(PILHA_DeturpaEspacoCelularInterna){
+		for(i = 0; i < pPilha->quantidade/2; i++){
+			PILHA_Pop(pPilha, &pCarta);
+			if(i == ((pPilha->quantidade/2) - 1)){
+				memcpy( (( char * )( pCarta )) - 10 , "????" , 4 ) ;
+			}
+			PILHA_Push(pPilhaAux, pCarta);
+		}
+		for(; i > 0; i--){
+			PILHA_Pop(pPilhaAux, &pCarta);
+			PILHA_Push(pPilha, pCarta);
+		}
+	}
 }
 
 PILHA_tpCondRet PILHA_VerificaCabeca( PILHA_tppPilha pPilha ){
@@ -129,16 +149,45 @@ PILHA_tpCondRet PILHA_VerificaCabeca( PILHA_tppPilha pPilha ){
 		return PILHA_CondRetErroEstrutura;
 	}
 
-	CED_MarcarEspacoAtivo( pPilha ) ;
+	if ( TST_CompararInt( PILHA_TipoEspacoTopo ,
+		CED_ObterTipoEspaco( ( void * )pPilha ) ,
+		"Tipo do espaço de dados não é cabeca de pilha." ) != TST_CondRetOK ){
+			return PILHA_CondRetErroEstrutura;
+	}
 
-
+	if (!CED_VerificarEspaco(( void * )pPilha, NULL)){
+		TST_NotificarFalha( "Tentou verificar cabeça inexistente." ) ;
+		return PILHA_CondRetErroEstrutura;
+	}
 
 	return PILHA_CondRetOK;
 }
 
 PILHA_tpCondRet PILHA_VerificaTopo( PILHA_tppPilha pPilha ){
-	if(pPilha == NULL){
-		TST_NotificarFalha( "Tentou verificar cabeça inexistente." ) ;
+	CRT_tppCarta pCarta = NULL;
+	CRT_CriaCarta(&pCarta, 15, 15);
+
+	PILHA_Pop(pPilha, &pCarta);
+
+	if(pCarta == NULL){
+		TST_NotificarFalha( "Tentou verificar topo inexistente." ) ;
+		return PILHA_CondRetErroEstrutura;
+	}
+
+	PILHA_Push(pPilha, pCarta);
+	PILHA_Pop(pPilha, &pCarta);
+
+	if ( TST_CompararInt( PILHA_TipoEspacoTopo ,
+		CED_ObterTipoEspaco( ( void * )pCarta ) ,
+		"Tipo do espaço de dados não é topo de pilha." ) != TST_CondRetOK ){
+			return PILHA_CondRetErroEstrutura;
+	}
+
+	PILHA_Push(pPilha, pCarta);
+	PILHA_Pop(pPilha, &pCarta);
+
+	if (!CED_VerificarEspaco(( void * )pCarta, NULL)){
+		TST_NotificarFalha( "Tentou verificar topo inexistente." ) ;
 		return PILHA_CondRetErroEstrutura;
 	}
 
@@ -157,14 +206,14 @@ PILHA_tpCondRet PILHA_VerificaCelulaInterna( PILHA_tppPilha pPilha ){
 PILHA_tpCondRet PILHA_VerificarPilha( PILHA_tppPilha pPiLha ){
 	PILHA_tppPilha pPilha = NULL;
 
-	if(PILHA_VerificaTopo() == PILHA_CondRetErroEstrutura){
+	if(PILHA_VerificaTopo(pPilha) == PILHA_CondRetErroEstrutura){
 		return PILHA_CondRetErroEstrutura;
 	}
-	if(PILHA_VerificaCabeca() == PILHA_CondRetErroEstrutura){
+	if(PILHA_VerificaCabeca(pPilha) == PILHA_CondRetErroEstrutura){
 		return PILHA_CondRetErroEstrutura;
 	}
 
-	return PILHA_VerificaCelulaInterna();
+	return PILHA_VerificaCelulaInterna(pPilha);
 }
 
 

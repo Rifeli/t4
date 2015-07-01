@@ -19,6 +19,7 @@
 ***************************************************************************/
 
       PILHA_TipoEspacoCabeca , 
+      PILHA_TipoEspacoTopo   ,
       PILHA_TipoEspacoNo     ,
 
 /********** Fim do arquivo de definição: TiposEspacosPilha.def  **********/
