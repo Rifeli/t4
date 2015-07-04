@@ -45,16 +45,17 @@ typedef enum {
 typedef struct PILHA_tgPilha * PILHA_tppPilha;
 
 typedef enum { 
-
-	PILHA_DeturpaCabeca ,
-	PILHA_DeturpaTipoCabeca ,
-	PILHA_DeturpaEspacoCabeca ,
-	PILHA_DeturpaQuantidade ,
-	PILHA_DeturpaEspacoTopo ,
-	PILHA_DeturpaLixoTopo ,
-	PILHA_DeturpaLixoCelulaInterna ,
-	PILHA_DeturpaTipoTopo ,
-	PILHA_DeturpaEspacoCelularInterna ,
+	padding,
+	elimina_corrente,
+	null_sucessor,
+	null_predecessor ,
+	lixo_sucessor,
+	lixo_predecessor ,
+	lixo_ponteiro ,
+	null_conteudo ,
+	destaca_elemento ,
+	null_corrente ,
+	null_origem ,
 
 } PILHA_tpModosDeturpacao;
 

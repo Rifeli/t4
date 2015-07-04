@@ -47,7 +47,9 @@
 
          struct tagElemLista * pProx ;
                /* Ponteiro para o elemento sucessor */
-
+         #ifdef _DEBUG
+            char[50] tipo;
+         #endif
    } tpElemLista ;
 
 /***********************************************************************
@@ -87,6 +89,189 @@
    static void LimparCabeca( LIS_tppLista pLista ) ;
 
 /*****  Código das funções exportadas pelo módulo  *****/
+#ifdef _DEBUG
+   static char lixo[256] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+   //ação 1: libera elemento corrente da estrutura escolhida
+  int LIS_LiberaElemCorrente(LIS_tppLista pLista)
+   {
+      free( pLista->pElemCorr ) ;
+      return 1;
+   }
+   //ação 2: atribui null para o sucesso
+   int LIS_SucesNULL(LIS_tppLista pLista)
+   {
+      pLista->pElemCorr->pProx = NULL ;
+      return 1;
+   }
+   //ação 3: atribui null para o antecessor
+   int LIS_PreNULL(LIS_tppLista pLista)
+   {
+      pLista->pElemCorr->pAnt = NULL ;
+      return 1;
+   }
+   //ação 4: atribui lixo para o sucesso
+   int LIS_LixoSucessor(LIS_tppLista pLista)
+   {
+      pLista->pElemCorr->pProx = (LIS_tppLista *) lixo;
+      return 1;
+   }
+   //ação 5: atribui lixo para o precessor
+   int LIS_LixoPre(LIS_tppLista pLista)
+   {
+      pLista->pElemCorr->pProx = (LIS_tppLista *) lixo;
+      return 1;
+   }
+   //ação 6: atribui NULL para o conteudo do nó
+   int LIS_NULLConteudo(LIS_tppLista pLista)
+   {
+      pLista->pElemCorr->pValor = NULL ;
+      return 1;
+   }
+   //ação 7: altera o tipo do nó
+   int LIS_AlteraTipoDoConteudo(LIS_tppLista pLista)
+   {
+      pLista->pElemCorr->tipo = "tipo_errado";
+      return 1;
+   }
+   //ação 8: destaca o conteudo
+   int LIS_DestacaConteudo(LIS_tppLista pLista)
+   {
+      pLista->pElemCorr->pAnt->pProx = pLista->pElemCorr->pProx ;
+      pLista->numElem--;
+      pLista->pElemCorr->pProx->pAnt = pLista->pElemCorr->pAnt ;
+      return 1;
+   }
+   //ação 9: corrente nulo
+   int LIS_NULLCorrente(LIS_tppLista pLista)
+   {
+      pLista->pElemCorr = NULL ;
+      return 1;
+   }
+   //ação 10: origim nulo
+   int LIS_NULLOrigem(LIS_tppLista pLista)
+   {
+      pLista->pOrigemLista = NULL ;
+      return 1;
+   }
+
+#endif
+
+#ifdef _DEBUG
+
+LIS_tpCondRet LIS_VerificaLiberaElemCorrente(LIS_tppLista pLista){
+   if(pLista->pElemCorr == NULL)
+      return LIS_CondRetListaNaoExiste;
+}
+
+LIS_tpCondRet LIS_VerificaSucessorNULL(LIS_tppLista pLista){
+   int cond;
+   LIS_tppLista lis;
+
+   cond = IrFinalLista(pLista);
+   if( cond != LIS_CondRetOK)
+      return cond;
+
+   for(lis = pLista; lis->ant != NULL; lis = list->ant)
+      if(lis->ant->prox == NULL)
+         return LIS_CondRetSucessorNulo;
+
+   if(lis->prox == NULL)
+      return LIS_CondRetSucessorNulo;
+
+   return LIS_CondRetOK;
+}
+
+
+
+LIS_tpCondRet LIS_VerificaPredecessorNULL(LIS_tppLista pLista){
+   int cond;
+   LIS_tppLista lis;
+
+   cond = IrInicioLista(pLista);
+   if( cond != LIS_CondRetOK)
+      return cond;
+
+   for(lis = pLista; lis->prox != NULL; lis = list->prox)
+      if(lis->prox->ant == NULL)
+         return LIS_CondRetPredecessor;
+
+   if(lis->ant == NULL)
+      return LIS_CondRetPredecessor;
+
+   return LIS_CondRetOK;
+}
+
+LIS_tpCondRet LIS_VerificaLixoSucessor(LIS_tppLista pLista){
+   int cond;
+   LIS_tppLista lis;
+
+   cond = IrFinalLista(pLista);
+   if( cond != LIS_CondRetOK)
+      return cond;
+
+   for(lis = pLista; lis->ant != NULL; lis = list->ant)
+      if(lis->ant->prox != NULL && lis->ant->prox != lis)
+         return LIS_CondRetSucessorLixo;
+
+   if(lis->prox != NULL && lis->prox->ant->prox != lis->prox)
+      return LIS_CondRetSucessorLixo;
+
+   return LIS_CondRetOK;
+}
+
+LIS_tpCondRet LIS_VerificaLixoPredecessor(LIS_tppLista pLista){
+   int cond;
+   LIS_tppLista lis;
+
+   cond = IrInicioLista(pLista);
+   if( cond != LIS_CondRetOK)
+      return cond;
+
+   for(lis = pLista; lis->prox != NULL && lis->prox->ant == list; lis = list->prox)
+      if(lis->prox->ant != NULL && lis->prox->ant != lis)
+         return LIS_CondRetPredecessorLixo;
+
+   if(lis->ant != NULL && lis->ant->prox != lis)
+      return LIS_CondRetPredecessorLixo;
+
+   return LIS_CondRetOK;
+}
+
+LIS_tpCondRet LIS_VerificaConteudoNulo(LIS_tppLista pLista){
+   return (pLista->pElemCorr->valor == NULL) ? LIS_CondRetConteudoNulo : LIS_CondRetOK;
+}
+
+LIS_tpCondRet LIS_VerificaTipoConteudo(LIS_tppLista pLista, char * tipo){
+   return (strcmp(pLista->pElemCorr->tipo,tipo) == 0 ? LIS_CondRetOK : LIS_CondRetTipoInvalido);
+}
+
+LIS_tpCondRet LIS_VerificaCorrenteNulo(LIS_tppLista pLista){
+   return (pLista->pElemCorr == NULL) ? LIS_CondRetCorrenteNull : LIS_CondRetOK;
+}
+
+LIS_tpCondRet LIS_pOrigemNulo(LIS_tppLista pLista){
+   return (pLista->pOrigemLista == NULL) ? LIS_CondRetCorrenteNull : LIS_CondRetOK;   
+}
+//confere numero da quantidade com o numero de movimentos possiveis dentro da lista
+LIS_tpCondRet LIS_confereNumero(LIS_tppLista pLista){
+   int i, j;
+   LIS_tppLista lis;
+   cond = IrInicioLista(pLista);
+   if(cond != LIS_CondRetOK)
+      return cond;
+   for(lis = pLista, i = 0; lis->prox != NULL; lis = list->prox, i++);
+   cond = IrFinalLista(pLista);
+   if(cond != LIS_CondRetOK)
+      return cond;
+   for(lis = pLista, j = 0; lis->ant != NULL; lis = list->ant, j++);
+   return ((i > j ? i : j) < (pLista->numElem ? LIS_CondRetOK : LIS_CondRetNaoAchou));
+}
+
+#endif
+
+int LIS_NumeroDeElementos(LIS_tppLista pLista){
+   return pLista->numElem;
+}
 
 /***************************************************************************
 *
@@ -164,7 +349,8 @@
 *  ****/
 
    LIS_tpCondRet LIS_InserirElementoAntes( LIS_tppLista pLista ,
-                                           void * pValor        )
+                                           void * pValor,
+                                           char * tipo)
    {
 
       tpElemLista * pElem ;
@@ -175,7 +361,7 @@
 
       /* Criar elemento a inerir antes */
 
-         pElem = CriarElemento( pLista , pValor ) ;
+         pElem = CriarElemento( pLista , pValor, tipo ) ;
          if ( pElem == NULL )
          {
             return LIS_CondRetFaltouMemoria ;
@@ -214,7 +400,8 @@
 *  ****/
 
    LIS_tpCondRet LIS_InserirElementoApos( LIS_tppLista pLista ,
-                                          void * pValor        )
+                                          void * pValor
+                                          char * tipo)
       
    {
 
@@ -226,7 +413,7 @@
 
       /* Criar elemento a inerir após */
 
-         pElem = CriarElemento( pLista , pValor ) ;
+         pElem = CriarElemento( pLista , pValor , tipo) ;
          if ( pElem == NULL )
          {
             return LIS_CondRetFaltouMemoria ;
@@ -518,7 +705,8 @@
 ***********************************************************************/
 
    tpElemLista * CriarElemento( LIS_tppLista pLista ,
-                                void *       pValor  )
+                                void *       pValor  ,
+                                char * tipo)
    {
 
       tpElemLista * pElem ;
@@ -532,7 +720,7 @@
       pElem->pValor = pValor ;
       pElem->pAnt   = NULL  ;
       pElem->pProx  = NULL  ;
-
+      pElem->tipo   = tipo;
       pLista->numElem ++ ;
 
       return pElem ;
@@ -555,19 +743,6 @@
       pLista->numElem   = 0 ;
 
    } /* Fim função: LIS  -Limpar a cabeça da lista */
-
- LIS_tpCondRet LIS_VerificaCelulaInterna(LIS_tppLista pLista){
-	   if(pLista->pElemCorr->pProx->pAnt == pLista->pElemCorr){
-		   return LIS_CondRetFalhaVerificar;
-	   }
-	   if(pLista->pElemCorr->pAnt->pProx == pLista->pElemCorr){
-		   return LIS_CondRetFalhaVerificar;
-	   }
-	   if(pLista->pElemCorr->pProx->pProx->pAnt == pLista->pElemCorr->pProx){
-		   return LIS_CondRetFalhaVerificar;
-	   }
-   
-   }
 
 /********** Fim do módulo de implementação: LIS  Lista duplamente encadeada **********/
 

@@ -17,7 +17,8 @@
 *     VersÃ£o   Autor    Data      ObservaÃ§Ãµes
 *       1.00   HR  30/04/2015 InÃ­cio do desenvolvimento
 *       2.00   GM  01/05/2015 Arrumacao das funcoes
-*		3.00   Vic  04/05/2015 Ajeitar ComentÃ¡rios
+*		3.00   VS  04/05/2015 Ajeitar ComentÃ¡rios
+*		4.00   VS  02/07/2015 verificacao e deturpacao
 *
 *		MÃ³dulo de implementaÃ§Ã£o de pilha de cartas
 *
@@ -54,21 +55,8 @@ typedef struct PILHA_tgPilha{
 	LIS_tppLista topo;
 	int quantidade;
 	void(*ExcluirValor) (void * pValor);
-
-#ifdef _DEBUG
-	PILHA_tppPilha pCabeca;
-	int idTipo;
-	int tamValor;
-#endif
 } PILHA_tpPilha;
 
-#ifdef _DEBUG
-
-static char EspacoLixo[ 256 ] =
-	"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ;
-/* Espaço de dados lixo usado ao testar */
-
-#endif
 
 /********************************************************************************
 * PILHA_Deturpa
@@ -76,144 +64,73 @@ static char EspacoLixo[ 256 ] =
 *********************************************************************************/
 
 void PILHA_Deturpa(PILHA_tppPilha pPilha, PILHA_tpModosDeturpacao ModoDeturpar){
-	int i;
+   //ação 2: atribui null para o sucesso
+   if(ModoDeturpar == null_sucessor)
+		int LIS_SucesNULL(ppilha->topo);
 
-	PILHA_tppPilha pPilhaAux = NULL;
-	CRT_tppCarta pCarta = NULL;
+   //ação 3: atribui null para o antecessor
+   if(ModoDeturpar == null_predecessor)
+		int LIS_PreNULL(ppilha->topo);
 
-	CRT_CriaCarta(&pCarta, 15, 15);
-	PILHA_CriarPilha(&pPilhaAux);
+	//ação 4: atribui lixo para o sucesso
+	if(ModoDeturpar == lixo_sucessor)
+		int LIS_LixoSucessor(ppilha->topo);
 
-	if(PILHA_DeturpaCabeca){
-		pPilha->topo = NULL;
-	}
-	else if(PILHA_DeturpaTipoCabeca){
-		CED_DefinirTipoEspaco( pPilha , CED_ID_TIPO_ILEGAL ) ;
-	}
-	else if(PILHA_DeturpaEspacoCabeca){
-		memcpy( (( char * )( pPilha )) - 10 , "????" , 4 ) ;
-	}
-	else if(PILHA_DeturpaQuantidade){
-		pPilha->quantidade = INT_MAX;
-	}
-	else if(PILHA_DeturpaEspacoTopo){
-		if(PILHA_Pop(pPilha, &pCarta) == PILHA_CondRetOK){
-			memcpy( (( char * )( pCarta )) - 10 , "????" , 4 ) ;
-			PILHA_Push(pPilha, pCarta);
-		}
-	}
-	else if(PILHA_DeturpaLixoTopo){
-		if(PILHA_Pop(pPilha, &pCarta) == PILHA_CondRetOK){
-			pCarta = ( CRT_tppCarta )( EspacoLixo ) ;
-			PILHA_Push(pPilha, pCarta);
-		}
-	}
-	else if(PILHA_DeturpaLixoCelulaInterna){
-		for(i = 0; i < pPilha->quantidade/2; i++){
-			PILHA_Pop(pPilha, &pCarta);
-			if(i == ((pPilha->quantidade/2) - 1)){
-				pCarta = ( CRT_tppCarta )( EspacoLixo ) ;
-			}
-			PILHA_Push(pPilhaAux, pCarta);
-		}
-		for(; i > 0; i--){
-			PILHA_Pop(pPilhaAux, &pCarta);
-			PILHA_Push(pPilha, pCarta);
-		}
-	}
-	else if(PILHA_DeturpaTipoTopo){
-		if(PILHA_Pop(pPilha, &pCarta) == PILHA_CondRetOK){
-			CED_DefinirTipoEspaco( pPilha , CED_ID_TIPO_ILEGAL );
-			PILHA_Push(pPilha, pCarta);
-		}
+	//ação 5: atribui lixo para o precessor
+	if(ModoDeturpar == lixo_predecessor)
+		int LIS_LixoPre(ppilha->topo);
 
-	}
-	else if(PILHA_DeturpaEspacoCelularInterna){
-		for(i = 0; i < pPilha->quantidade/2; i++){
-			PILHA_Pop(pPilha, &pCarta);
-			if(i == ((pPilha->quantidade/2) - 1)){
-				memcpy( (( char * )( pCarta )) - 10 , "????" , 4 ) ;
-			}
-			PILHA_Push(pPilhaAux, pCarta);
-		}
-		for(; i > 0; i--){
-			PILHA_Pop(pPilhaAux, &pCarta);
-			PILHA_Push(pPilha, pCarta);
-		}
-	}
+	//ação 6: atribui NULL para o conteudo do nó
+	if(ModoDeturpar == lixo_ponteiro)
+		int LIS_NULLConteudo(ppilha->topo);
+
+	//ação 7: altera o tipo do nó
+	if(ModoDeturpar == null_conteudo)
+		int LIS_AlteraTipoDoConteudo(ppilha->topo);
+
+	//ação 8: destaca o conteudo
+	if(ModoDeturpar == destaca_elemento)
+		int LIS_DestacaConteudo(ppilha->topo);
+
+	//ação 9: corrente nulo
+	if(ModoDeturpar == null_corrente)
+  		int LIS_NULLCorrente(ppilha->topo);
+
+   //ação 1: libera elemento corrente da estrutura escolhida
+   if(ModoDeturpar = elimina_corrente)
+		int LIS_LiberaElemCorrente(ppilha->topo);
+	
+	//ação 10: origim nulo
+	if(ModoDeturpar == null_origem)
+		int LIS_NULLOrigem(ppilha->topo);
+
 }
 
-PILHA_tpCondRet PILHA_VerificaCabeca( PILHA_tppPilha pPilha ){
-	if(pPilha == NULL){
-		TST_NotificarFalha( "Tentou verificar cabeça inexistente." ) ;
-		return PILHA_CondRetErroEstrutura;
-	}
+PILHA_tpCondRet PILHA_VerificarPilha( PILHA_tppPilha pPiLha, int * quantidadeErros){
+	*quantidadeErros = 0;
+	
+	if(LIS_VerificaLiberaElemCorrente != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_VerificaSucessorNULL != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_VerificaPredecessorNULL != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_VerificaLixoSucessor != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_VerificaLixoPredecessor != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_VerificaConteudoNulo != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_VerificaTipoConteudo != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_VerificaCorrenteNulo != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_NumeroDeElementos != LIS_CondRetOK)
+		*quantidadeErros += 1;
+	if(LIS_confereNumero != LIS_CondRetOK)
+		*quantidadeErros += 1;
 
-	if ( TST_CompararInt( PILHA_TipoEspacoTopo ,
-		CED_ObterTipoEspaco( ( void * )pPilha ) ,
-		"Tipo do espaço de dados não é cabeca de pilha." ) != TST_CondRetOK ){
-			return PILHA_CondRetErroEstrutura;
-	}
-
-	if (!CED_VerificarEspaco(( void * )pPilha, NULL)){
-		TST_NotificarFalha( "Tentou verificar cabeça inexistente." ) ;
-		return PILHA_CondRetErroEstrutura;
-	}
-
-	return PILHA_CondRetOK;
-}
-
-PILHA_tpCondRet PILHA_VerificaTopo( PILHA_tppPilha pPilha ){
-	CRT_tppCarta pCarta = NULL;
-	CRT_CriaCarta(&pCarta, 15, 15);
-
-	PILHA_Pop(pPilha, &pCarta);
-
-	if(pCarta == NULL){
-		TST_NotificarFalha( "Tentou verificar topo inexistente." ) ;
-		return PILHA_CondRetErroEstrutura;
-	}
-
-	PILHA_Push(pPilha, pCarta);
-	PILHA_Pop(pPilha, &pCarta);
-
-	if ( TST_CompararInt( PILHA_TipoEspacoTopo ,
-		CED_ObterTipoEspaco( ( void * )pCarta ) ,
-		"Tipo do espaço de dados não é topo de pilha." ) != TST_CondRetOK ){
-			return PILHA_CondRetErroEstrutura;
-	}
-
-	PILHA_Push(pPilha, pCarta);
-	PILHA_Pop(pPilha, &pCarta);
-
-	if (!CED_VerificarEspaco(( void * )pCarta, NULL)){
-		TST_NotificarFalha( "Tentou verificar topo inexistente." ) ;
-		return PILHA_CondRetErroEstrutura;
-	}
-
-	return PILHA_CondRetOK;
-}
-
-PILHA_tpCondRet PILHA_VerificaCelulaInterna( PILHA_tppPilha pPilha ){
-	if(pPilha == NULL){
-		TST_NotificarFalha( "Tentou verificar cabeça inexistente." ) ;
-		return PILHA_CondRetErroEstrutura;
-	}
-
-	return PILHA_CondRetOK;
-}
-
-PILHA_tpCondRet PILHA_VerificarPilha( PILHA_tppPilha pPiLha ){
-	PILHA_tppPilha pPilha = NULL;
-
-	if(PILHA_VerificaTopo(pPilha) == PILHA_CondRetErroEstrutura){
-		return PILHA_CondRetErroEstrutura;
-	}
-	if(PILHA_VerificaCabeca(pPilha) == PILHA_CondRetErroEstrutura){
-		return PILHA_CondRetErroEstrutura;
-	}
-
-	return PILHA_VerificaCelulaInterna(pPilha);
+	return PILHA_CondRetOk;
 }
 
 
@@ -237,16 +154,17 @@ PILHA_tpCondRet PILHA_CriarPilha(PILHA_tppPilha * pp)
 
 #ifdef _DEBUG
 	CNT_CONTAR("PILHA_CriarPilha");
-	CED_DefinirTipoEspaco( p , PILHA_TipoEspacoNo ) ;
-#else
-	p = NULL ;   
+
+	CED_DefinirTipoEspaco( p , PILHA_TipoEspacoNo ) ;  
 #endif
 
 	p->topo = LIS_CriarLista(NULL);
 	p->ExcluirValor = NULL;
 	p->quantidade = 0;
 	*pp = p;
-
+	#ifdef _DEBUG
+		CED_MarcarEspacoAtivo(pp);
+	#endif
 	return PILHA_CondRetOK;
 } /* Fim funÃ§Ã£o: PILHA Cria Pilha */
 
@@ -261,8 +179,13 @@ PILHA_tpCondRet PILHA_CriarPilha(PILHA_tppPilha * pp)
 *		bota um elemento no topo da pilha
 ***********************************************************************/
 PILHA_tpCondRet PILHA_Push(PILHA_tppPilha p, CRT_tppCarta carta){
-	if (!p) 
+	if (!p){
+		#ifdef _DEBUG
+		CNT_CONTAR("PILHA_Push-pilhaInexistente");
+		CED_MarcarEspacoAtivo(carta);
+		#endif
 		return PILHA_CondRetPilhaInexistente;
+	}
 
 	IrInicioLista(p->topo);
 
@@ -286,18 +209,28 @@ PILHA_tpCondRet PILHA_Pop(PILHA_tppPilha p, CRT_tppCarta * carta){
 	int condRet = 0;
 	CRT_tppCarta crt_aux = NULL;
 
-	if (p == NULL)
+	if (p == NULL){
+		#ifdef _DEBUG
+		CNT_CONTAR("PILHA_Pop-PilhaInexistente");
+		#endif
 		return PILHA_CondRetPilhaInexistente;
-
-	if (p->topo == NULL)
+	}
+	if (p->topo == NULL){
+		#ifdef _DEBUG
+		CNT_CONTAR("PILHA_Pop-PilhaTopoInexistente");
+		#endif
 		return PILHA_CondRetPilhaInexistente;
-
+	}
 	//LIS_AvancarElementoCorrente(p->topo);
 	crt_aux = (CRT_tppCarta)LIS_ObterValor(p->topo);
 	CRT_ObtemCarta(crt_aux, &crt[0], &crt[1]);
 
 	condRet = LIS_ExcluirElemento(p->topo);
+	
 	if (condRet == 1){
+		#ifdef _DEBUG
+		CNT_CONTAR("PILHA_Pop-PilhaTopoInexistente-2");
+		#endif
 		p = NULL;
 		return PILHA_CondRetPilhaInexistente;
 	}

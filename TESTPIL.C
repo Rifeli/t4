@@ -16,6 +16,7 @@
  *     Versão      Autor            Data                Observações
  *     1.0       GM,HR,VS        17/04/2015       Início do desenvolvimento
  *     2.0       GM,HR,VS        03/04/2015              Correções 
+ *     3.0        HR,VS          02/28/2015       Adicionar chamadas de script pra deturpacao e verificacao 
  *
  *  $ED Descrição do módulo
  *     Teste de Pilha
@@ -47,6 +48,8 @@
 #define     QUANTIDADE         "=quantidade"
 #define     DECREMENTA_PILHA   "=decrementa"
 #define     INCREMENTA_PILHA   "=incrementa"
+#define     DETURPA            "=deturpa"
+#define     VERIFICA           "=verifica"
 
 /*****  Código das funções exportadas pelo módulo  *****/
 
@@ -65,6 +68,8 @@
       char ValorEsperado = '?'  ;
       char ValorObtido   = '!'  ;
       int  NumLidos = -1 ;
+      int acao = 0;
+      int nErros = 0;
 	  int  quantidade;
 	  CRT_tppCarta carta = NULL;
 
@@ -151,7 +156,7 @@
              /* Testar PILHA decrementa */
 
              if ( strcmp( ComandoTeste , DECREMENTA_PILHA) == 0 )
-         {
+          {
 
             NumLidos = LER_LerParametros( "i" ,
                                &CondRetEsperada) ;
@@ -164,6 +169,42 @@
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
                                     "Retorno errado ao criar Pilha." );
+
+         } /* fim ativa: Testar Pilha decrementada */
+
+            if ( strcmp( ComandoTeste , DETURPA) == 0 )
+          {
+
+            NumLidos = LER_LerParametros( "ii" ,
+                               &CondRetEsperada, &acao) ;
+            if ( NumLidos != 2 )
+            {
+               return TST_CondRetParm;
+            } /* if */
+
+            CondRetObtido = PILHA_Deturpa(pPilha, condDeturpacao) ;
+
+            return TST_CompararInt( CondRetEsperada , CondRetObtido ,
+                                    "Erro na deturpacao da pilha." );
+
+         } /* fim ativa: Testar Pilha deturpa */
+
+          if ( strcmp( ComandoTeste , VERIFICA) == 0 )
+          {
+
+            NumLidos = LER_LerParametros( "ii" ,
+                               &CondRetEsperada, &nErros) ;
+            if ( NumLidos != 2 )
+            {
+               return TST_CondRetParm;
+            } /* if */
+
+            CondRetObtido = PILHA_VerificarPilha(pPilha, &nErros);
+            CondRetObtido = PILHA_VerificarPilha(pPilha, &nErros);
+            printf("%d erros na pilha\n", nErro);
+
+            return TST_CompararInt( CondRetEsperada , CondRetObtido ,
+                                    "Existem erros na pilha" );
 
          } /* fim ativa: Testar Pilha decrementada */
 

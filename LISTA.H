@@ -90,11 +90,64 @@ typedef struct LIS_tagLista * LIS_tppLista ;
 
          LIS_CondRetFaltouMemoria ,
                /* Faltou memória ao tentar criar um elemento de lista */
-	     LIS_CondRetFalhaVerificar
+	     LIS_CondRetFalhaVerificar ,
+       LIS_CondRetSucessorNulo,
+       LIS_CondRetPredecessor
 
    } LIS_tpCondRet ;
+/*
+  FUNCOES DE DETURPAÇÃO
+*/
+#ifdef _DEBUG
+   
+  //ação 1: libera elemento corrente da estrutura escolhida
+  int LIS_LiberaElemCorrente(LIS_tppLista pLista);
 
+   //ação 2: atribui null para o sucesso
+   int LIS_SucesNULL(LIS_tppLista pLista);
 
+   //ação 3: atribui null para o antecessor
+   int LIS_PreNULL(LIS_tppLista pLista);
+
+   //ação 4: atribui lixo para o sucesso
+   int LIS_LixoSucessor(LIS_tppLista pLista);
+
+   //ação 5: atribui lixo para o precessor
+   int LIS_LixoPre(LIS_tppLista pLista);
+
+   //ação 6: atribui NULL para o conteudo do nó
+   int LIS_NULLConteudo(LIS_tppLista pLista);
+
+   //ação 7: altera o tipo do nó
+   int LIS_AlteraTipoDoConteudo(LIS_tppLista pLista);
+
+   //ação 8: destaca o conteudo
+   int LIS_DestacaConteudo(LIS_tppLista pLista);
+
+   //ação 9: corrente nulo
+   int LIS_NULLCorrente(LIS_tppLista pLista);
+
+   //ação 10: origim nulo
+   int LIS_NULLOrigem(LIS_tppLista pLista);
+
+#endif
+//fim funcoes de deturpacao
+#ifdef _DEBUG
+   
+   LIS_tpCondRet LIS_VerificaLiberaElemCorrente(LIS_tppLista pLista);
+   LIS_tpCondRet LIS_VerificaSucessorNULL(LIS_tppLista pLista);
+   LIS_tpCondRet LIS_VerificaPredecessorNULL(LIS_tppLista pLista);
+   LIS_tpCondRet LIS_VerificaLixoSucessor(LIS_tppLista pLista);
+   LIS_tpCondRet LIS_VerificaLixoPredecessor(LIS_tppLista pLista);
+   LIS_tpCondRet LIS_VerificaConteudoNulo(LIS_tppLista pLista);
+   LIS_tpCondRet LIS_VerificaTipoConteudo(LIS_tppLista pLista, char * tipo);
+   LIS_tpCondRet LIS_VerificaCorrenteNulo(LIS_tppLista pLista);
+   LIS_tpCondRet LIS_pOrigemNulo(LIS_tppLista pLista);
+   LIS_tpCondRet LIS_confereNumero(LIS_tppLista pLista);
+
+#endif
+
+int LIS_NumeroDeElementos(LIS_tppLista pLista);
 /***********************************************************************
 *
 *  $FC Função: LIS  &Criar lista
@@ -338,8 +391,6 @@ typedef struct LIS_tagLista * LIS_tppLista ;
 
    LIS_tpCondRet LIS_ProcurarValor( LIS_tppLista pLista ,
                                     void * pValor        ) ;
-
-   LIS_tpCondRet LIS_VerificaCelulaInterna(LIS_tppLista pLista);
 
 #undef LISTA_EXT
 
