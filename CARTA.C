@@ -25,6 +25,9 @@
 #include "CARTA.H"
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef _DEBUG
+#include "CESPDIN.H"
+#endif
 
 /***********************************************************************
 *
@@ -58,6 +61,10 @@ CRT_tpCondRet CRT_CriaCarta(CRT_tppCarta * crt, int Num_Carta, int Naipe){
 	CRT_tppCarta crt_aux = NULL;
 	crt_aux = (CRT_tppCarta)malloc(sizeof(CRT_tpCarta));
 
+#ifdef _DEBUG
+	CED_MarcarEspacoAtivo(crt);
+#endif
+
 	if(!crt_aux){
 		return CRT_CondRetFaltouMemoria;
 	} /* if */
@@ -90,6 +97,10 @@ CRT_tpCondRet CRT_CriaCarta(CRT_tppCarta * crt, int Num_Carta, int Naipe){
 ***********************************************************************/
 
 CRT_tpCondRet CRT_DeletaCarta(CRT_tppCarta crt){
+#ifdef _DEBUG
+	CED_MarcarEspacoNaoAtivo(crt);
+#endif
+
 	if(crt == NULL){
 		return CRT_CondRetCartaInexistente;
 	} /* if */
@@ -147,8 +158,8 @@ CRT_tpCondRet CRT_PrintCarta(CRT_tppCarta crt){
 			c = 'Q';
 		else if(crt->Num_Carta == 13)
 			c = 'K';
-		
-		
+
+
 		printf("  %c%c ", c, n);
 	}
 	else if (crt->Num_Carta == 10){
@@ -177,7 +188,7 @@ CRT_tpCondRet CRT_ObtemCarta(CRT_tppCarta crt, int *  Num_Carta, int * Naipe){
 	if(!crt){
 		return CRT_CondRetCartaInexistente;
 	} /* if */
-	
+
 	*Num_Carta = crt->Num_Carta;
 	*Naipe = crt->Naipe;
 
@@ -201,7 +212,7 @@ CRT_tpCondRet CRT_ViraCarta(CRT_tppCarta crt){
 		return CRT_CondRetCartaInexistente;
 	/* if */
 	crt->Num_Carta *= -1;
-	
+
 
 	return CRT_CondRetOk;
 }/* Fim função: CRT Vira Carta */

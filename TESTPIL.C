@@ -182,7 +182,7 @@
                return TST_CondRetParm;
             } /* if */
 
-            CondRetObtido = PILHA_Deturpa(pPilha, condDeturpacao) ;
+            CondRetObtido = PILHA_Deturpa(pPilha, acao) ;
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
                                     "Erro na deturpacao da pilha." );
@@ -200,8 +200,7 @@
             } /* if */
 
             CondRetObtido = PILHA_VerificarPilha(pPilha, &nErros);
-            CondRetObtido = PILHA_VerificarPilha(pPilha, &nErros);
-            printf("%d erros na pilha\n", nErro);
+            printf("%d erros na pilha\n", nErros);
 
             return TST_CompararInt( CondRetEsperada , CondRetObtido ,
                                     "Existem erros na pilha" );

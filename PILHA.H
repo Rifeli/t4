@@ -59,7 +59,6 @@ typedef enum {
 
 } PILHA_tpModosDeturpacao;
 
-void PILHA_Deturpa(PILHA_tppPilha * pPilha, PILHA_tpModosDeturpacao ModoDeturpar);
 
 /***********************************************************************
 *
@@ -132,8 +131,8 @@ PILHA_tpCondRet PILHA_Incrementa(PILHA_tppPilha p);
 
 #ifdef _DEBUG
 
-void PILHA_Deturpa(PILHA_tppPilha pPilha, PILHA_tpModosDeturpacao ModoDeturpar);
-PILHA_tpCondRet PILHA_VerificarPilha( PILHA_tppPilha pPiLha );
+PILHA_tpCondRet PILHA_Deturpa(PILHA_tppPilha pPilha, int ModoDeturpar);
+PILHA_tpCondRet PILHA_VerificarPilha( PILHA_tppPilha pPiLha, int * quantidadeErros );
 
 #endif
 

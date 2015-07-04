@@ -63,74 +63,76 @@ typedef struct PILHA_tgPilha{
 * Deturpacao da pilha de acordo com o modulo de deturpacao recebido
 *********************************************************************************/
 
-void PILHA_Deturpa(PILHA_tppPilha pPilha, PILHA_tpModosDeturpacao ModoDeturpar){
-   //ação 2: atribui null para o sucesso
-   if(ModoDeturpar == null_sucessor)
-		int LIS_SucesNULL(ppilha->topo);
+PILHA_tpCondRet PILHA_Deturpa(PILHA_tppPilha pPilha, int ModoDeturpar){
+	//ação 2: atribui null para o sucesso
+	if(ModoDeturpar == null_sucessor)
+		LIS_SucesNULL(pPilha->topo);
 
-   //ação 3: atribui null para o antecessor
-   if(ModoDeturpar == null_predecessor)
-		int LIS_PreNULL(ppilha->topo);
+	//ação 3: atribui null para o antecessor
+	if(ModoDeturpar == null_predecessor)
+		LIS_PreNULL(pPilha->topo);
 
 	//ação 4: atribui lixo para o sucesso
 	if(ModoDeturpar == lixo_sucessor)
-		int LIS_LixoSucessor(ppilha->topo);
+		LIS_LixoSucessor(pPilha->topo);
 
 	//ação 5: atribui lixo para o precessor
 	if(ModoDeturpar == lixo_predecessor)
-		int LIS_LixoPre(ppilha->topo);
+		LIS_LixoPre(pPilha->topo);
 
 	//ação 6: atribui NULL para o conteudo do nó
 	if(ModoDeturpar == lixo_ponteiro)
-		int LIS_NULLConteudo(ppilha->topo);
+		LIS_NULLConteudo(pPilha->topo);
 
 	//ação 7: altera o tipo do nó
 	if(ModoDeturpar == null_conteudo)
-		int LIS_AlteraTipoDoConteudo(ppilha->topo);
+		LIS_AlteraTipoDoConteudo(pPilha->topo);
 
 	//ação 8: destaca o conteudo
 	if(ModoDeturpar == destaca_elemento)
-		int LIS_DestacaConteudo(ppilha->topo);
+		LIS_DestacaConteudo(pPilha->topo);
 
 	//ação 9: corrente nulo
 	if(ModoDeturpar == null_corrente)
-  		int LIS_NULLCorrente(ppilha->topo);
+		LIS_NULLCorrente(pPilha->topo);
 
-   //ação 1: libera elemento corrente da estrutura escolhida
-   if(ModoDeturpar = elimina_corrente)
-		int LIS_LiberaElemCorrente(ppilha->topo);
-	
+	//ação 1: libera elemento corrente da estrutura escolhida
+	if(ModoDeturpar = elimina_corrente)
+		LIS_LiberaElemCorrente(pPilha->topo);
+
 	//ação 10: origim nulo
 	if(ModoDeturpar == null_origem)
-		int LIS_NULLOrigem(ppilha->topo);
+		LIS_NULLOrigem(pPilha->topo);
+
+	return PILHA_CondRetOK;
 
 }
 
-PILHA_tpCondRet PILHA_VerificarPilha( PILHA_tppPilha pPiLha, int * quantidadeErros){
+PILHA_tpCondRet PILHA_VerificarPilha( PILHA_tppPilha pPilha, int * quantidadeErros){
 	*quantidadeErros = 0;
-	
-	if(LIS_VerificaLiberaElemCorrente != LIS_CondRetOK)
+
+	if(LIS_VerificaLiberaElemCorrente(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_VerificaSucessorNULL != LIS_CondRetOK)
+	if(LIS_VerificaSucessorNULL(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_VerificaPredecessorNULL != LIS_CondRetOK)
+	if(LIS_VerificaPredecessorNULL(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_VerificaLixoSucessor != LIS_CondRetOK)
+	if(LIS_VerificaLixoSucessor(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_VerificaLixoPredecessor != LIS_CondRetOK)
+	if(LIS_VerificaLixoPredecessor(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_VerificaConteudoNulo != LIS_CondRetOK)
+	if(LIS_VerificaConteudoNulo(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_VerificaTipoConteudo != LIS_CondRetOK)
+	if(LIS_VerificaTipoConteudo(pPilha->topo, "carta") != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_VerificaCorrenteNulo != LIS_CondRetOK)
+	if(LIS_VerificaCorrenteNulo(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_NumeroDeElementos != LIS_CondRetOK)
+	if(LIS_NumeroDeElementos(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
-	if(LIS_confereNumero != LIS_CondRetOK)
+	if(LIS_confereNumero(pPilha->topo) != LIS_CondRetOK)
 		*quantidadeErros += 1;
 
-	return PILHA_CondRetOk;
+	return PILHA_CondRetOK;
 }
 
 
@@ -154,17 +156,15 @@ PILHA_tpCondRet PILHA_CriarPilha(PILHA_tppPilha * pp)
 
 #ifdef _DEBUG
 	CNT_CONTAR("PILHA_CriarPilha");
-
-	CED_DefinirTipoEspaco( p , PILHA_TipoEspacoNo ) ;  
 #endif
 
 	p->topo = LIS_CriarLista(NULL);
 	p->ExcluirValor = NULL;
 	p->quantidade = 0;
 	*pp = p;
-	#ifdef _DEBUG
-		CED_MarcarEspacoAtivo(pp);
-	#endif
+#ifdef _DEBUG
+	CED_MarcarEspacoAtivo(pp);
+#endif
 	return PILHA_CondRetOK;
 } /* Fim funÃ§Ã£o: PILHA Cria Pilha */
 
@@ -180,16 +180,15 @@ PILHA_tpCondRet PILHA_CriarPilha(PILHA_tppPilha * pp)
 ***********************************************************************/
 PILHA_tpCondRet PILHA_Push(PILHA_tppPilha p, CRT_tppCarta carta){
 	if (!p){
-		#ifdef _DEBUG
+#ifdef _DEBUG
 		CNT_CONTAR("PILHA_Push-pilhaInexistente");
-		CED_MarcarEspacoAtivo(carta);
-		#endif
+#endif
 		return PILHA_CondRetPilhaInexistente;
 	}
 
 	IrInicioLista(p->topo);
 
-	LIS_InserirElementoAntes(p->topo, carta);
+	LIS_InserirElementoAntes(p->topo, carta, "carta");
 	p->quantidade += 1;
 	return PILHA_CondRetOK;
 } /* Fim funÃ§Ã£o: PILHA Push Pilha */
@@ -210,15 +209,15 @@ PILHA_tpCondRet PILHA_Pop(PILHA_tppPilha p, CRT_tppCarta * carta){
 	CRT_tppCarta crt_aux = NULL;
 
 	if (p == NULL){
-		#ifdef _DEBUG
+#ifdef _DEBUG
 		CNT_CONTAR("PILHA_Pop-PilhaInexistente");
-		#endif
+#endif
 		return PILHA_CondRetPilhaInexistente;
 	}
 	if (p->topo == NULL){
-		#ifdef _DEBUG
+#ifdef _DEBUG
 		CNT_CONTAR("PILHA_Pop-PilhaTopoInexistente");
-		#endif
+#endif
 		return PILHA_CondRetPilhaInexistente;
 	}
 	//LIS_AvancarElementoCorrente(p->topo);
@@ -226,11 +225,11 @@ PILHA_tpCondRet PILHA_Pop(PILHA_tppPilha p, CRT_tppCarta * carta){
 	CRT_ObtemCarta(crt_aux, &crt[0], &crt[1]);
 
 	condRet = LIS_ExcluirElemento(p->topo);
-	
+
 	if (condRet == 1){
-		#ifdef _DEBUG
+#ifdef _DEBUG
 		CNT_CONTAR("PILHA_Pop-PilhaTopoInexistente-2");
-		#endif
+#endif
 		p = NULL;
 		return PILHA_CondRetPilhaInexistente;
 	}
@@ -290,5 +289,20 @@ PILHA_tpCondRet PILHA_Incrementa(PILHA_tppPilha p){
 *		$ED DescriÃ§Ã£o do tipo
 *		Move cartas de uma pilha para a outra
 ***********************************************************************/
+
+PILHA_tpCondRet PILHA_DestroiPilha(PILHA_tppPilha p){
+	if(!p){
+		return PILHA_CondRetPilhaInexistente;
+	}
+
+#ifdef _DEBUG
+	CED_MarcarEspacoNaoAtivo(p);
+#endif
+
+	LIS_DestruirLista(p->topo);
+	free(p);
+
+	return PILHA_CondRetOK;
+}
 
 

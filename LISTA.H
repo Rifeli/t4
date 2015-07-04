@@ -90,9 +90,18 @@ typedef struct LIS_tagLista * LIS_tppLista ;
 
          LIS_CondRetFaltouMemoria ,
                /* Faltou memória ao tentar criar um elemento de lista */
+#ifdef _DEBUG
 	     LIS_CondRetFalhaVerificar ,
-       LIS_CondRetSucessorNulo,
-       LIS_CondRetPredecessor
+         LIS_CondRetSucessorNulo ,
+         LIS_CondRetPredecessor ,
+	     LIS_CondRetListaNaoExiste ,
+		 LIS_CondRetSucessorLixo ,
+		 LIS_CondRetPredecessorLixo ,
+		 LIS_CondRetConteudoNulo ,
+		 LIS_CondRetTipoInvalido ,
+		 LIS_CondRetCorrenteNull ,
+#endif
+
 
    } LIS_tpCondRet ;
 /*
@@ -232,7 +241,8 @@ int LIS_NumeroDeElementos(LIS_tppLista pLista);
 ***********************************************************************/
 
    LIS_tpCondRet LIS_InserirElementoAntes( LIS_tppLista pLista ,
-                                           void * pValor        ) ;
+                                           void * pValor,
+                                           char * tipo) ;
 
 
 /***********************************************************************
@@ -257,9 +267,9 @@ int LIS_NumeroDeElementos(LIS_tppLista pLista);
 *
 ***********************************************************************/
 
-   LIS_tpCondRet LIS_InserirElementoApos( LIS_tppLista pLista ,
-                                          void * pValor        )
-       ;
+  LIS_tpCondRet LIS_InserirElementoApos( LIS_tppLista pLista ,
+                                          void * pValor ,
+                                          char * tipo) ;
 
 
 /***********************************************************************

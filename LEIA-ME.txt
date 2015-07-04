@@ -1,0 +1,34 @@
+============================
+LEIA-ME -  Paciencia Spider     
+============================
+
+ Desenvolvido por:
+--------------------------------------------------------------------------------------------------------------------- */
+- Gabriel Medeiros
+- Henrique Rito
+- Victor Sabino
+
+Apresentação:
+-----------------------------------------------------------------------------------------------------------------------*/
+Esse arquivo de texto descreve o conteúdo de INF1301-Trab4-GMHRVS a ser implementado e testado. O .bat executa uma 
+situação a ser desenvolvida pelos módulos criados.
+
+Utilização do programa: 
+-----------------------------------------------------------------------------------------------------------------------*/
+1)
+Selecione e abra a pasta Executaveis, escolha o executavel e remova a parte .txt do arquivo .exe!!
+
+2)
+Depois, dentro da pasta INF1301-Trab4-GMHRVS, selecione Batches e o abra.
+
+3)
+Agora para executar o .exe faça:
+
+- Selecione e abra o arquivo Verifica.bat para executar o módulos seu reespectivo teste.
+
+Pastas à parte:
+------------------------------------------------------------------------------------------------------------------------*/
+- Logs: Esta pasta possui os arquivos com os logs de execução de cada arquivo .bat.
+- Scripts: Contendo os arquivos .script que comandam a execução das funções de cada módulo.
+- Relatorios: Abrange os textos relacionados aos relatorios de cada membro do grupo.
+- Modulos: Possui os arquivos .c, .h e teste para o funcionamento completo de cada parte a ser utilizada no Spider.

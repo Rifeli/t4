@@ -25,6 +25,9 @@
 #include   <memory.h>
 #include   <malloc.h>
 #include   <assert.h>
+#ifdef _DEBUG
+#include "CESPDIN.H"
+#endif
 
 #define LISTA_OWN
 #include "LISTA.h"
@@ -37,20 +40,20 @@
 *
 ***********************************************************************/
 
-   typedef struct tagElemLista {
+typedef struct tagElemLista {
 
-         void * pValor ;
-               /* Ponteiro para o valor contido no elemento */
+	void * pValor ;
+	/* Ponteiro para o valor contido no elemento */
 
-         struct tagElemLista * pAnt ;
-               /* Ponteiro para o elemento predecessor */
+	struct tagElemLista * pAnt ;
+	/* Ponteiro para o elemento predecessor */
 
-         struct tagElemLista * pProx ;
-               /* Ponteiro para o elemento sucessor */
-         #ifdef _DEBUG
-            char[50] tipo;
-         #endif
-   } tpElemLista ;
+	struct tagElemLista * pProx ;
+	/* Ponteiro para o elemento sucessor */
+#ifdef _DEBUG
+	char tipo[50];
+#endif
+} tpElemLista ;
 
 /***********************************************************************
 *
@@ -59,218 +62,205 @@
 *
 ***********************************************************************/
 
-   typedef struct LIS_tagLista {
+typedef struct LIS_tagLista {
 
-         tpElemLista * pOrigemLista ;
-               /* Ponteiro para a origem da lista */
+	tpElemLista * pOrigemLista ;
+	/* Ponteiro para a origem da lista */
 
-         tpElemLista * pFimLista ;
-               /* Ponteiro para o final da lista */
+	tpElemLista * pFimLista ;
+	/* Ponteiro para o final da lista */
 
-         tpElemLista * pElemCorr ;
-               /* Ponteiro para o elemento corrente da lista */
+	tpElemLista * pElemCorr ;
+	/* Ponteiro para o elemento corrente da lista */
 
-         int numElem ;
-               /* Número de elementos da lista */
+	int numElem ;
+	/* Número de elementos da lista */
 
-         void ( * ExcluirValor ) ( void * pValor ) ;
-               /* Ponteiro para a função de destruição do valor contido em um elemento */
+	void ( * ExcluirValor ) ( void * pValor ) ;
+	/* Ponteiro para a função de destruição do valor contido em um elemento */
 
-   } LIS_tpLista ;
+} LIS_tpLista ;
 
 /***** Protótipos das funções encapuladas no módulo *****/
 
-   static void LiberarElemento( LIS_tppLista   pLista ,
-                                tpElemLista  * pElem   ) ;
+static void LiberarElemento( LIS_tppLista   pLista ,
+	tpElemLista  * pElem   ) ;
 
-   static tpElemLista * CriarElemento( LIS_tppLista pLista ,
-                                       void *       pValor  ) ;
+static tpElemLista * CriarElemento( LIS_tppLista pLista ,
+	void *       pValor ,
+	char * tipo ) ;
 
-   static void LimparCabeca( LIS_tppLista pLista ) ;
+static void LimparCabeca( LIS_tppLista pLista ) ;
 
 /*****  Código das funções exportadas pelo módulo  *****/
 #ifdef _DEBUG
-   static char lixo[256] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-   //ação 1: libera elemento corrente da estrutura escolhida
-  int LIS_LiberaElemCorrente(LIS_tppLista pLista)
-   {
-      free( pLista->pElemCorr ) ;
-      return 1;
-   }
-   //ação 2: atribui null para o sucesso
-   int LIS_SucesNULL(LIS_tppLista pLista)
-   {
-      pLista->pElemCorr->pProx = NULL ;
-      return 1;
-   }
-   //ação 3: atribui null para o antecessor
-   int LIS_PreNULL(LIS_tppLista pLista)
-   {
-      pLista->pElemCorr->pAnt = NULL ;
-      return 1;
-   }
-   //ação 4: atribui lixo para o sucesso
-   int LIS_LixoSucessor(LIS_tppLista pLista)
-   {
-      pLista->pElemCorr->pProx = (LIS_tppLista *) lixo;
-      return 1;
-   }
-   //ação 5: atribui lixo para o precessor
-   int LIS_LixoPre(LIS_tppLista pLista)
-   {
-      pLista->pElemCorr->pProx = (LIS_tppLista *) lixo;
-      return 1;
-   }
-   //ação 6: atribui NULL para o conteudo do nó
-   int LIS_NULLConteudo(LIS_tppLista pLista)
-   {
-      pLista->pElemCorr->pValor = NULL ;
-      return 1;
-   }
-   //ação 7: altera o tipo do nó
-   int LIS_AlteraTipoDoConteudo(LIS_tppLista pLista)
-   {
-      pLista->pElemCorr->tipo = "tipo_errado";
-      return 1;
-   }
-   //ação 8: destaca o conteudo
-   int LIS_DestacaConteudo(LIS_tppLista pLista)
-   {
-      pLista->pElemCorr->pAnt->pProx = pLista->pElemCorr->pProx ;
-      pLista->numElem--;
-      pLista->pElemCorr->pProx->pAnt = pLista->pElemCorr->pAnt ;
-      return 1;
-   }
-   //ação 9: corrente nulo
-   int LIS_NULLCorrente(LIS_tppLista pLista)
-   {
-      pLista->pElemCorr = NULL ;
-      return 1;
-   }
-   //ação 10: origim nulo
-   int LIS_NULLOrigem(LIS_tppLista pLista)
-   {
-      pLista->pOrigemLista = NULL ;
-      return 1;
-   }
+static char lixo[256] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+//ação 1: libera elemento corrente da estrutura escolhida
+int LIS_LiberaElemCorrente(LIS_tppLista pLista)
+{
+	free( pLista->pElemCorr ) ;
+	return 1;
+}
+//ação 2: atribui null para o sucesso
+int LIS_SucesNULL(LIS_tppLista pLista)
+{
+	pLista->pElemCorr->pProx = NULL ;
+	return 1;
+}
+//ação 3: atribui null para o antecessor
+int LIS_PreNULL(LIS_tppLista pLista)
+{
+	pLista->pElemCorr->pAnt = NULL ;
+	return 1;
+}
+//ação 4: atribui lixo para o sucesso
+int LIS_LixoSucessor(LIS_tppLista pLista)
+{
+	pLista->pElemCorr->pProx = (struct tagElemLista *) lixo;
+	return 1;
+}
+//ação 5: atribui lixo para o precessor
+int LIS_LixoPre(LIS_tppLista pLista)
+{
+	pLista->pElemCorr->pProx = (struct tagElemLista *) lixo;
+	return 1;
+}
+//ação 6: atribui NULL para o conteudo do nó
+int LIS_NULLConteudo(LIS_tppLista pLista)
+{
+	pLista->pElemCorr->pValor = NULL ;
+	return 1;
+}
+//ação 7: altera o tipo do nó
+int LIS_AlteraTipoDoConteudo(LIS_tppLista pLista)
+{
+	strcpy(pLista->pElemCorr->tipo, "tipo_errado");
+	return 1;
+}
+//ação 8: destaca o conteudo
+int LIS_DestacaConteudo(LIS_tppLista pLista)
+{
+	pLista->pElemCorr->pAnt->pProx = pLista->pElemCorr->pProx ;
+	pLista->numElem--;
+	pLista->pElemCorr->pProx->pAnt = pLista->pElemCorr->pAnt ;
+	return 1;
+}
+//ação 9: corrente nulo
+int LIS_NULLCorrente(LIS_tppLista pLista)
+{
+	pLista->pElemCorr = NULL ;
+	return 1;
+}
+//ação 10: origim nulo
+int LIS_NULLOrigem(LIS_tppLista pLista)
+{
+	pLista->pOrigemLista = NULL ;
+	return 1;
+}
 
 #endif
 
 #ifdef _DEBUG
 
 LIS_tpCondRet LIS_VerificaLiberaElemCorrente(LIS_tppLista pLista){
-   if(pLista->pElemCorr == NULL)
-      return LIS_CondRetListaNaoExiste;
+	if(pLista->pElemCorr == NULL)
+		return LIS_CondRetListaNaoExiste;
 }
 
 LIS_tpCondRet LIS_VerificaSucessorNULL(LIS_tppLista pLista){
-   int cond;
-   LIS_tppLista lis;
+	LIS_tppLista lis;
 
-   cond = IrFinalLista(pLista);
-   if( cond != LIS_CondRetOK)
-      return cond;
+	IrFinalLista(pLista);
 
-   for(lis = pLista; lis->ant != NULL; lis = list->ant)
-      if(lis->ant->prox == NULL)
-         return LIS_CondRetSucessorNulo;
+	for(lis = pLista; lis->pElemCorr->pAnt != NULL; lis->pElemCorr = lis->pElemCorr->pAnt)
+		if(lis->pElemCorr->pAnt->pProx == NULL)
+			return LIS_CondRetSucessorNulo;
 
-   if(lis->prox == NULL)
-      return LIS_CondRetSucessorNulo;
+	if(lis->pElemCorr->pProx == NULL)
+		return LIS_CondRetSucessorNulo;
 
-   return LIS_CondRetOK;
+	return LIS_CondRetOK;
 }
 
 
 
 LIS_tpCondRet LIS_VerificaPredecessorNULL(LIS_tppLista pLista){
-   int cond;
-   LIS_tppLista lis;
+	LIS_tppLista lis;
 
-   cond = IrInicioLista(pLista);
-   if( cond != LIS_CondRetOK)
-      return cond;
+	IrInicioLista(pLista);
 
-   for(lis = pLista; lis->prox != NULL; lis = list->prox)
-      if(lis->prox->ant == NULL)
-         return LIS_CondRetPredecessor;
+	for(lis = pLista; lis->pElemCorr->pProx != NULL; lis->pElemCorr = lis->pElemCorr->pProx)
+		if(lis->pElemCorr->pProx->pAnt == NULL)
+			return LIS_CondRetPredecessor;
 
-   if(lis->ant == NULL)
-      return LIS_CondRetPredecessor;
+	if(lis->pElemCorr->pAnt == NULL)
+		return LIS_CondRetPredecessor;
 
-   return LIS_CondRetOK;
+	return LIS_CondRetOK;
 }
 
 LIS_tpCondRet LIS_VerificaLixoSucessor(LIS_tppLista pLista){
-   int cond;
-   LIS_tppLista lis;
+	LIS_tppLista lis;
 
-   cond = IrFinalLista(pLista);
-   if( cond != LIS_CondRetOK)
-      return cond;
+	IrFinalLista(pLista);
 
-   for(lis = pLista; lis->ant != NULL; lis = list->ant)
-      if(lis->ant->prox != NULL && lis->ant->prox != lis)
-         return LIS_CondRetSucessorLixo;
+	for(lis = pLista; lis->pElemCorr->pAnt != NULL; lis->pElemCorr = lis->pElemCorr->pAnt)
+		if(lis->pElemCorr->pAnt->pProx != NULL && lis->pElemCorr->pAnt->pProx != lis->pElemCorr)
+			return LIS_CondRetSucessorLixo;
 
-   if(lis->prox != NULL && lis->prox->ant->prox != lis->prox)
-      return LIS_CondRetSucessorLixo;
+	if(lis->pElemCorr->pProx != NULL && lis->pElemCorr->pProx->pAnt->pProx != lis->pElemCorr->pProx)
+		return LIS_CondRetSucessorLixo;
 
-   return LIS_CondRetOK;
+	return LIS_CondRetOK;
 }
 
 LIS_tpCondRet LIS_VerificaLixoPredecessor(LIS_tppLista pLista){
-   int cond;
-   LIS_tppLista lis;
+	LIS_tppLista lis;
 
-   cond = IrInicioLista(pLista);
-   if( cond != LIS_CondRetOK)
-      return cond;
+	IrInicioLista(pLista);
 
-   for(lis = pLista; lis->prox != NULL && lis->prox->ant == list; lis = list->prox)
-      if(lis->prox->ant != NULL && lis->prox->ant != lis)
-         return LIS_CondRetPredecessorLixo;
+	for(lis = pLista; lis->pElemCorr->pProx != NULL && lis->pElemCorr->pProx->pAnt == lis->pElemCorr; lis->pElemCorr = lis->pElemCorr->pProx)
+		if(lis->pElemCorr->pProx->pAnt != NULL && lis->pElemCorr->pProx->pAnt != lis->pElemCorr)
+			return LIS_CondRetPredecessorLixo;
 
-   if(lis->ant != NULL && lis->ant->prox != lis)
-      return LIS_CondRetPredecessorLixo;
+	if(lis->pElemCorr->pAnt != NULL && lis->pElemCorr->pAnt->pProx != lis->pElemCorr)
+		return LIS_CondRetPredecessorLixo;
 
-   return LIS_CondRetOK;
+	return LIS_CondRetOK;
 }
 
 LIS_tpCondRet LIS_VerificaConteudoNulo(LIS_tppLista pLista){
-   return (pLista->pElemCorr->valor == NULL) ? LIS_CondRetConteudoNulo : LIS_CondRetOK;
+	return (pLista->pElemCorr->pValor == NULL) ? LIS_CondRetConteudoNulo : LIS_CondRetOK;
 }
 
 LIS_tpCondRet LIS_VerificaTipoConteudo(LIS_tppLista pLista, char * tipo){
-   return (strcmp(pLista->pElemCorr->tipo,tipo) == 0 ? LIS_CondRetOK : LIS_CondRetTipoInvalido);
+	return (strcmp(pLista->pElemCorr->tipo,tipo) == 0 ? LIS_CondRetOK : LIS_CondRetTipoInvalido);
 }
 
 LIS_tpCondRet LIS_VerificaCorrenteNulo(LIS_tppLista pLista){
-   return (pLista->pElemCorr == NULL) ? LIS_CondRetCorrenteNull : LIS_CondRetOK;
+	return (pLista->pElemCorr == NULL) ? LIS_CondRetCorrenteNull : LIS_CondRetOK;
 }
 
 LIS_tpCondRet LIS_pOrigemNulo(LIS_tppLista pLista){
-   return (pLista->pOrigemLista == NULL) ? LIS_CondRetCorrenteNull : LIS_CondRetOK;   
+	return (pLista->pOrigemLista == NULL) ? LIS_CondRetCorrenteNull : LIS_CondRetOK;   
 }
 //confere numero da quantidade com o numero de movimentos possiveis dentro da lista
 LIS_tpCondRet LIS_confereNumero(LIS_tppLista pLista){
-   int i, j;
-   LIS_tppLista lis;
-   cond = IrInicioLista(pLista);
-   if(cond != LIS_CondRetOK)
-      return cond;
-   for(lis = pLista, i = 0; lis->prox != NULL; lis = list->prox, i++);
-   cond = IrFinalLista(pLista);
-   if(cond != LIS_CondRetOK)
-      return cond;
-   for(lis = pLista, j = 0; lis->ant != NULL; lis = list->ant, j++);
-   return ((i > j ? i : j) < (pLista->numElem ? LIS_CondRetOK : LIS_CondRetNaoAchou));
+	int i, j;
+	LIS_tppLista lis;
+	IrInicioLista(pLista);
+
+	for(lis = pLista, i = 0; lis->pElemCorr->pProx != NULL; lis->pElemCorr = lis->pElemCorr->pProx, i++);
+	IrFinalLista(pLista);
+
+	for(lis = pLista, j = 0; lis->pElemCorr->pAnt != NULL; lis->pElemCorr = lis->pElemCorr->pAnt, j++);
+	return ((i > j ? i : j < pLista->numElem) ? LIS_CondRetOK : LIS_CondRetNaoAchou);
 }
 
 #endif
 
 int LIS_NumeroDeElementos(LIS_tppLista pLista){
-   return pLista->numElem;
+	return pLista->numElem;
 }
 
 /***************************************************************************
@@ -278,394 +268,405 @@ int LIS_NumeroDeElementos(LIS_tppLista pLista){
 *  Função: LIS  &Criar lista
 *  ****/
 
-   LIS_tppLista LIS_CriarLista(
-             void   ( * ExcluirValor ) ( void * pDado ) )
-   {
+LIS_tppLista LIS_CriarLista(
+	void   ( * ExcluirValor ) ( void * pDado ) )
+{
 
-      LIS_tpLista * pLista = NULL ;
+	LIS_tpLista * pLista = NULL ;
 
-      pLista = ( LIS_tpLista * ) malloc( sizeof( LIS_tpLista )) ;
-      if ( pLista == NULL )
-      {
-         return NULL ;
-      } /* if */
+	pLista = ( LIS_tpLista * ) malloc( sizeof( LIS_tpLista )) ;
+	if ( pLista == NULL )
+	{
+		return NULL ;
+	} /* if */
 
-      LimparCabeca( pLista ) ;
+#ifdef _DEBUG
+	CED_MarcarEspacoAtivo(pLista);
+#endif
 
-      pLista->ExcluirValor = ExcluirValor ;
+	LimparCabeca( pLista ) ;
 
-      return pLista ;
+	pLista->ExcluirValor = ExcluirValor ;
 
-   } /* Fim função: LIS  &Criar lista */
+	return pLista ;
+
+} /* Fim função: LIS  &Criar lista */
 
 /***************************************************************************
 *
 *  Função: LIS  &Destruir lista
 *  ****/
 
-   void LIS_DestruirLista( LIS_tppLista pLista )
-   {
+void LIS_DestruirLista( LIS_tppLista pLista )
+{
+#ifdef _DEBUG
+	CED_MarcarEspacoNaoAtivo(pLista);
+#endif
+#ifdef _DEBUG
+	assert( pLista != NULL ) ;
+#endif
 
-      #ifdef _DEBUG
-         assert( pLista != NULL ) ;
-      #endif
+	LIS_EsvaziarLista( pLista ) ;
 
-      LIS_EsvaziarLista( pLista ) ;
+	free( pLista ) ;
 
-      free( pLista ) ;
-
-   } /* Fim função: LIS  &Destruir lista */
+} /* Fim função: LIS  &Destruir lista */
 
 /***************************************************************************
 *
 *  Função: LIS  &Esvaziar lista
 *  ****/
 
-   void LIS_EsvaziarLista( LIS_tppLista pLista )
-   {
+void LIS_EsvaziarLista( LIS_tppLista pLista )
+{
 
-      tpElemLista * pElem ;
-      tpElemLista * pProx ;
+	tpElemLista * pElem ;
+	tpElemLista * pProx ;
 
-      #ifdef _DEBUG
-         assert( pLista != NULL ) ;
-      #endif
 
-      pElem = pLista->pOrigemLista ;
-      while ( pElem != NULL )
-      {
-         pProx = pElem->pProx ;
-         LiberarElemento( pLista , pElem ) ;
-         pElem = pProx ;
-      } /* while */
+#ifdef _DEBUG
+	assert( pLista != NULL ) ;
+#endif
 
-      LimparCabeca( pLista ) ;
+	pElem = pLista->pOrigemLista ;
+	while ( pElem != NULL )
+	{
+		pProx = pElem->pProx ;
+		LiberarElemento( pLista , pElem ) ;
+		pElem = pProx ;
+	} /* while */
 
-   } /* Fim função: LIS  &Esvaziar lista */
+	LimparCabeca( pLista ) ;
+
+} /* Fim função: LIS  &Esvaziar lista */
 
 /***************************************************************************
 *
 *  Função: LIS  &Inserir elemento antes
 *  ****/
 
-   LIS_tpCondRet LIS_InserirElementoAntes( LIS_tppLista pLista ,
-                                           void * pValor,
-                                           char * tipo)
-   {
+LIS_tpCondRet LIS_InserirElementoAntes( LIS_tppLista pLista ,
+	void * pValor,
+	char * tipo)
+{
 
-      tpElemLista * pElem ;
+	tpElemLista * pElem ;
 
-      #ifdef _DEBUG
-         assert( pLista != NULL ) ;
-      #endif
+#ifdef _DEBUG
+	assert( pLista != NULL ) ;
+#endif
 
-      /* Criar elemento a inerir antes */
+	/* Criar elemento a inerir antes */
 
-         pElem = CriarElemento( pLista , pValor, tipo ) ;
-         if ( pElem == NULL )
-         {
-            return LIS_CondRetFaltouMemoria ;
-         } /* if */
+	pElem = CriarElemento( pLista , pValor, tipo ) ;
+	if ( pElem == NULL )
+	{
+		return LIS_CondRetFaltouMemoria ;
+	} /* if */
 
-      /* Encadear o elemento antes do elemento corrente */
+	/* Encadear o elemento antes do elemento corrente */
 
-         if ( pLista->pElemCorr == NULL )
-         {
-            pLista->pOrigemLista = pElem ;
-            pLista->pFimLista = pElem ;
-         } else
-         {
-            if ( pLista->pElemCorr->pAnt != NULL )
-            {
-               pElem->pAnt  = pLista->pElemCorr->pAnt ;
-               pLista->pElemCorr->pAnt->pProx = pElem ;
-            } else
-            {
-               pLista->pOrigemLista = pElem ;
-            } /* if */
+	if ( pLista->pElemCorr == NULL )
+	{
+		pLista->pOrigemLista = pElem ;
+		pLista->pFimLista = pElem ;
+	} else
+	{
+		if ( pLista->pElemCorr->pAnt != NULL )
+		{
+			pElem->pAnt  = pLista->pElemCorr->pAnt ;
+			pLista->pElemCorr->pAnt->pProx = pElem ;
+		} else
+		{
+			pLista->pOrigemLista = pElem ;
+		} /* if */
 
-            pElem->pProx = pLista->pElemCorr ;
-            pLista->pElemCorr->pAnt = pElem ;
-         } /* if */
+		pElem->pProx = pLista->pElemCorr ;
+		pLista->pElemCorr->pAnt = pElem ;
+	} /* if */
 
-         pLista->pElemCorr = pElem ;
+	pLista->pElemCorr = pElem ;
 
-         return LIS_CondRetOK ;
+	return LIS_CondRetOK ;
 
-   } /* Fim função: LIS  &Inserir elemento antes */
+} /* Fim função: LIS  &Inserir elemento antes */
 
 /***************************************************************************
 *
 *  Função: LIS  &Inserir elemento após
 *  ****/
 
-   LIS_tpCondRet LIS_InserirElementoApos( LIS_tppLista pLista ,
-                                          void * pValor
-                                          char * tipo)
-      
-   {
+LIS_tpCondRet LIS_InserirElementoApos( LIS_tppLista pLista ,
+	void * pValor ,
+	char * tipo)
 
-      tpElemLista * pElem ;
+{
 
-      #ifdef _DEBUG
-         assert( pLista != NULL ) ;
-      #endif
+	tpElemLista * pElem ;
 
-      /* Criar elemento a inerir após */
+#ifdef _DEBUG
+	assert( pLista != NULL ) ;
+#endif
 
-         pElem = CriarElemento( pLista , pValor , tipo) ;
-         if ( pElem == NULL )
-         {
-            return LIS_CondRetFaltouMemoria ;
-         } /* if */
+	/* Criar elemento a inerir após */
 
-      /* Encadear o elemento após o elemento */
+	pElem = CriarElemento( pLista , pValor , tipo) ;
+	if ( pElem == NULL )
+	{
+		return LIS_CondRetFaltouMemoria ;
+	} /* if */
 
-         if ( pLista->pElemCorr == NULL )
-         {
-            pLista->pOrigemLista = pElem ;
-            pLista->pFimLista = pElem ;
-         } else
-         {
-            if ( pLista->pElemCorr->pProx != NULL )
-            {
-               pElem->pProx  = pLista->pElemCorr->pProx ;
-               pLista->pElemCorr->pProx->pAnt = pElem ;
-            } else
-            {
-               pLista->pFimLista = pElem ;
-            } /* if */
+	/* Encadear o elemento após o elemento */
 
-            pElem->pAnt = pLista->pElemCorr ;
-            pLista->pElemCorr->pProx = pElem ;
+	if ( pLista->pElemCorr == NULL )
+	{
+		pLista->pOrigemLista = pElem ;
+		pLista->pFimLista = pElem ;
+	} else
+	{
+		if ( pLista->pElemCorr->pProx != NULL )
+		{
+			pElem->pProx  = pLista->pElemCorr->pProx ;
+			pLista->pElemCorr->pProx->pAnt = pElem ;
+		} else
+		{
+			pLista->pFimLista = pElem ;
+		} /* if */
 
-         } /* if */
-                  
-         pLista->pElemCorr = pElem ;
-                  
-         return LIS_CondRetOK ;
+		pElem->pAnt = pLista->pElemCorr ;
+		pLista->pElemCorr->pProx = pElem ;
 
-   } /* Fim função: LIS  &Inserir elemento após */
+	} /* if */
+
+	pLista->pElemCorr = pElem ;
+
+	return LIS_CondRetOK ;
+
+} /* Fim função: LIS  &Inserir elemento após */
 
 /***************************************************************************
 *
 *  Função: LIS  &Excluir elemento
 *  ****/
 
-   LIS_tpCondRet LIS_ExcluirElemento( LIS_tppLista pLista )
-   {
+LIS_tpCondRet LIS_ExcluirElemento( LIS_tppLista pLista )
+{
 
-      tpElemLista * pElem ;
+	tpElemLista * pElem ;
 
-      #ifdef _DEBUG
-         assert( pLista  != NULL ) ;
-      #endif
+#ifdef _DEBUG
+	CED_MarcarEspacoNaoAtivo(pLista->pElemCorr);
+#endif
 
-      if ( pLista->pElemCorr == NULL )
-      {
-         return LIS_CondRetListaVazia ;
-      } /* if */
+#ifdef _DEBUG
+	assert( pLista  != NULL ) ;
+#endif
 
-      pElem = pLista->pElemCorr ;
+	if ( pLista->pElemCorr == NULL )
+	{
+		return LIS_CondRetListaVazia ;
+	} /* if */
 
-      /* Desencadeia à esquerda */
+	pElem = pLista->pElemCorr ;
 
-         if ( pElem->pAnt != NULL )
-         {
-            pElem->pAnt->pProx   = pElem->pProx ;
-            pLista->pElemCorr    = pElem->pAnt ;
-         } else {
-            pLista->pElemCorr    = pElem->pProx ;
-            pLista->pOrigemLista = pLista->pElemCorr ;
-         } /* if */
+	/* Desencadeia à esquerda */
 
-      /* Desencadeia à direita */
+	if ( pElem->pAnt != NULL )
+	{
+		pElem->pAnt->pProx   = pElem->pProx ;
+		pLista->pElemCorr    = pElem->pAnt ;
+	} else {
+		pLista->pElemCorr    = pElem->pProx ;
+		pLista->pOrigemLista = pLista->pElemCorr ;
+	} /* if */
 
-         if ( pElem->pProx != NULL )
-         {
-            pElem->pProx->pAnt = pElem->pAnt ;
-         } else
-         {
-            pLista->pFimLista = pElem->pAnt ;
-         } /* if */
+	/* Desencadeia à direita */
 
-      LiberarElemento( pLista , pElem ) ;
+	if ( pElem->pProx != NULL )
+	{
+		pElem->pProx->pAnt = pElem->pAnt ;
+	} else
+	{
+		pLista->pFimLista = pElem->pAnt ;
+	} /* if */
 
-      return LIS_CondRetOK ;
+	LiberarElemento( pLista , pElem ) ;
 
-   } /* Fim função: LIS  &Excluir elemento */
+	return LIS_CondRetOK ;
+
+} /* Fim função: LIS  &Excluir elemento */
 
 /***************************************************************************
 *
 *  Função: LIS  &Obter referência para o valor contido no elemento
 *  ****/
 
-   void * LIS_ObterValor( LIS_tppLista pLista )
-   {
+void * LIS_ObterValor( LIS_tppLista pLista )
+{
 
-      #ifdef _DEBUG
-         assert( pLista != NULL ) ;
-      #endif
+#ifdef _DEBUG
+	assert( pLista != NULL ) ;
+#endif
 
-      if ( pLista->pElemCorr == NULL )
-      {
-        return NULL ;
-      } /* if */
+	if ( pLista->pElemCorr == NULL )
+	{
+		return NULL ;
+	} /* if */
 
-      return pLista->pElemCorr->pValor ;
+	return pLista->pElemCorr->pValor ;
 
-   } /* Fim função: LIS  &Obter referência para o valor contido no elemento */
+} /* Fim função: LIS  &Obter referência para o valor contido no elemento */
 
 /***************************************************************************
 *
 *  Função: LIS  &Ir para o elemento inicial
 *  ****/
 
-   void IrInicioLista( LIS_tppLista pLista )
-   {
+void IrInicioLista( LIS_tppLista pLista )
+{
 
-      #ifdef _DEBUG
-         assert( pLista != NULL ) ;
-      #endif
+#ifdef _DEBUG
+	assert( pLista != NULL ) ;
+#endif
 
-      pLista->pElemCorr = pLista->pOrigemLista ;
+	pLista->pElemCorr = pLista->pOrigemLista ;
 
-   } /* Fim função: LIS  &Ir para o elemento inicial */
+} /* Fim função: LIS  &Ir para o elemento inicial */
 
 /***************************************************************************
 *
 *  Função: LIS  &Ir para o elemento final
 *  ****/
 
-   void IrFinalLista( LIS_tppLista pLista )
-   {
+void IrFinalLista( LIS_tppLista pLista )
+{
 
-      #ifdef _DEBUG
-         assert( pLista != NULL ) ;
-      #endif
+#ifdef _DEBUG
+	assert( pLista != NULL ) ;
+#endif
 
-      pLista->pElemCorr = pLista->pFimLista ;
+	pLista->pElemCorr = pLista->pFimLista ;
 
-   } /* Fim função: LIS  &Ir para o elemento final */
+} /* Fim função: LIS  &Ir para o elemento final */
 
 /***************************************************************************
 *
 *  Função: LIS  &Avançar elemento
 *  ****/
 
-   LIS_tpCondRet LIS_AvancarElementoCorrente( LIS_tppLista pLista ,
-                                              int numElem )
-   {
+LIS_tpCondRet LIS_AvancarElementoCorrente( LIS_tppLista pLista ,
+	int numElem )
+{
 
-      int i ;
+	int i ;
 
-      tpElemLista * pElem ;
+	tpElemLista * pElem ;
 
-      #ifdef _DEBUG
-         assert( pLista != NULL ) ;
-      #endif
+#ifdef _DEBUG
+	assert( pLista != NULL ) ;
+#endif
 
-      /* Tratar lista vazia */
+	/* Tratar lista vazia */
 
-         if ( pLista->pElemCorr == NULL )
-         {
+	if ( pLista->pElemCorr == NULL )
+	{
 
-            return LIS_CondRetListaVazia ;
+		return LIS_CondRetListaVazia ;
 
-         } /* fim ativa: Tratar lista vazia */
+	} /* fim ativa: Tratar lista vazia */
 
-      /* Tratar avançar para frente */
+	/* Tratar avançar para frente */
 
-         if ( numElem > 0 )
-         {
+	if ( numElem > 0 )
+	{
 
-            pElem = pLista->pElemCorr ;
-            for( i = numElem ; i > 0 ; i-- )
-            {
-               if ( pElem == NULL )
-               {
-                  break ;
-               } /* if */
-               pElem    = pElem->pProx ;
-            } /* for */
+		pElem = pLista->pElemCorr ;
+		for( i = numElem ; i > 0 ; i-- )
+		{
+			if ( pElem == NULL )
+			{
+				break ;
+			} /* if */
+			pElem    = pElem->pProx ;
+		} /* for */
 
-            if ( pElem != NULL )
-            {
-               pLista->pElemCorr = pElem ;
-               return LIS_CondRetOK ;
-            } /* if */
+		if ( pElem != NULL )
+		{
+			pLista->pElemCorr = pElem ;
+			return LIS_CondRetOK ;
+		} /* if */
 
-            pLista->pElemCorr = pLista->pFimLista ;
-            return LIS_CondRetFimLista ;
+		pLista->pElemCorr = pLista->pFimLista ;
+		return LIS_CondRetFimLista ;
 
-         } /* fim ativa: Tratar avançar para frente */
+	} /* fim ativa: Tratar avançar para frente */
 
-      /* Tratar avançar para trás */
+	/* Tratar avançar para trás */
 
-         else if ( numElem < 0 )
-         {
+	else if ( numElem < 0 )
+	{
 
-            pElem = pLista->pElemCorr ;
-            for( i = numElem ; i < 0 ; i++ )
-            {
-               if ( pElem == NULL )
-               {
-                  break ;
-               } /* if */
-               pElem    = pElem->pAnt ;
-            } /* for */
+		pElem = pLista->pElemCorr ;
+		for( i = numElem ; i < 0 ; i++ )
+		{
+			if ( pElem == NULL )
+			{
+				break ;
+			} /* if */
+			pElem    = pElem->pAnt ;
+		} /* for */
 
-            if ( pElem != NULL )
-            {
-               pLista->pElemCorr = pElem ;
-               return LIS_CondRetOK ;
-            } /* if */
+		if ( pElem != NULL )
+		{
+			pLista->pElemCorr = pElem ;
+			return LIS_CondRetOK ;
+		} /* if */
 
-            pLista->pElemCorr = pLista->pOrigemLista ;
-            return LIS_CondRetFimLista ;
+		pLista->pElemCorr = pLista->pOrigemLista ;
+		return LIS_CondRetFimLista ;
 
-         } /* fim ativa: Tratar avançar para trás */
+	} /* fim ativa: Tratar avançar para trás */
 
-      /* Tratar não avançar */
+	/* Tratar não avançar */
 
-         return LIS_CondRetOK ;
+	return LIS_CondRetOK ;
 
-   } /* Fim função: LIS  &Avançar elemento */
+} /* Fim função: LIS  &Avançar elemento */
 
 /***************************************************************************
 *
 *  Função: LIS  &Procurar elemento contendo valor
 *  ****/
 
-   LIS_tpCondRet LIS_ProcurarValor( LIS_tppLista pLista ,
-                                    void * pValor        )
-   {
+LIS_tpCondRet LIS_ProcurarValor( LIS_tppLista pLista ,
+	void * pValor        )
+{
 
-      tpElemLista * pElem ;
+	tpElemLista * pElem ;
 
-      #ifdef _DEBUG
-         assert( pLista  != NULL ) ;
-      #endif
+#ifdef _DEBUG
+	assert( pLista  != NULL ) ;
+#endif
 
-      if ( pLista->pElemCorr == NULL )
-      {
-         return LIS_CondRetListaVazia ;
-      } /* if */
+	if ( pLista->pElemCorr == NULL )
+	{
+		return LIS_CondRetListaVazia ;
+	} /* if */
 
-      for ( pElem  = pLista->pElemCorr ;
-            pElem != NULL ;
-            pElem  = pElem->pProx )
-      {
-         if ( pElem->pValor == pValor )
-         {
-            pLista->pElemCorr = pElem ;
-            return LIS_CondRetOK ;
-         } /* if */
-      } /* for */
+	for ( pElem  = pLista->pElemCorr ;
+		pElem != NULL ;
+		pElem  = pElem->pProx )
+	{
+		if ( pElem->pValor == pValor )
+		{
+			pLista->pElemCorr = pElem ;
+			return LIS_CondRetOK ;
+		} /* if */
+	} /* for */
 
-      return LIS_CondRetNaoAchou ;
+	return LIS_CondRetNaoAchou ;
 
-   } /* Fim função: LIS  &Procurar elemento contendo valor */
+} /* Fim função: LIS  &Procurar elemento contendo valor */
 
 
 /*****  Código das funções encapsuladas no módulo  *****/
@@ -681,21 +682,25 @@ int LIS_NumeroDeElementos(LIS_tppLista pLista){
 *
 ***********************************************************************/
 
-   void LiberarElemento( LIS_tppLista   pLista ,
-                         tpElemLista  * pElem   )
-   {
+void LiberarElemento( LIS_tppLista   pLista ,
+	tpElemLista  * pElem   )
+{
 
-      if ( ( pLista->ExcluirValor != NULL )
-        && ( pElem->pValor != NULL        ))
-      {
-         pLista->ExcluirValor( pElem->pValor ) ;
-      } /* if */
+#ifdef _DEBUG
+	CED_MarcarEspacoNaoAtivo(pElem);
+#endif
 
-      free( pElem ) ;
+	if ( ( pLista->ExcluirValor != NULL )
+		&& ( pElem->pValor != NULL        ))
+	{
+		pLista->ExcluirValor( pElem->pValor ) ;
+	} /* if */
 
-      pLista->numElem-- ;
+	free( pElem ) ;
 
-   } /* Fim função: LIS  -Liberar elemento da lista */
+	pLista->numElem-- ;
+
+} /* Fim função: LIS  -Liberar elemento da lista */
 
 
 /***********************************************************************
@@ -704,28 +709,31 @@ int LIS_NumeroDeElementos(LIS_tppLista pLista){
 *
 ***********************************************************************/
 
-   tpElemLista * CriarElemento( LIS_tppLista pLista ,
-                                void *       pValor  ,
-                                char * tipo)
-   {
+tpElemLista * CriarElemento( LIS_tppLista pLista ,
+	void *       pValor  ,
+	char * tipo)
+{
 
-      tpElemLista * pElem ;
+	tpElemLista * pElem ;
 
-      pElem = ( tpElemLista * ) malloc( sizeof( tpElemLista )) ;
-      if ( pElem == NULL )
-      {
-         return NULL ;
-      } /* if */
+	pElem = ( tpElemLista * ) malloc( sizeof( tpElemLista )) ;
+	if ( pElem == NULL )
+	{
+		return NULL ;
+	} /* if */
 
-      pElem->pValor = pValor ;
-      pElem->pAnt   = NULL  ;
-      pElem->pProx  = NULL  ;
-      pElem->tipo   = tipo;
-      pLista->numElem ++ ;
+	pElem->pValor = pValor ;
+	pElem->pAnt   = NULL  ;
+	pElem->pProx  = NULL  ;
+#ifdef _DEBUG
+	CED_MarcarEspacoAtivo(pElem);
+#endif
+	strcpy(pElem->tipo, tipo);
+	pLista->numElem ++ ;
 
-      return pElem ;
+	return pElem ;
 
-   } /* Fim função: LIS  -Criar o elemento */
+} /* Fim função: LIS  -Criar o elemento */
 
 
 /***********************************************************************
@@ -734,15 +742,15 @@ int LIS_NumeroDeElementos(LIS_tppLista pLista){
 *
 ***********************************************************************/
 
-   void LimparCabeca( LIS_tppLista pLista )
-   {
+void LimparCabeca( LIS_tppLista pLista )
+{
 
-      pLista->pOrigemLista = NULL ;
-      pLista->pFimLista = NULL ;
-      pLista->pElemCorr = NULL ;
-      pLista->numElem   = 0 ;
+	pLista->pOrigemLista = NULL ;
+	pLista->pFimLista = NULL ;
+	pLista->pElemCorr = NULL ;
+	pLista->numElem   = 0 ;
 
-   } /* Fim função: LIS  -Limpar a cabeça da lista */
+} /* Fim função: LIS  -Limpar a cabeça da lista */
 
 /********** Fim do módulo de implementação: LIS  Lista duplamente encadeada **********/
 
